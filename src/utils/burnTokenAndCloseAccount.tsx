@@ -5,7 +5,7 @@ import { Dispatch, SetStateAction } from 'react';
 
 
 
-export async function burnTokenAndCloseAccount(tokenMintAddress: string, owner: PublicKey, wallet: WalletContextState, connection: Connection, setAmount: Dispatch<SetStateAction<string>>, setIsburning: Dispatch<SetStateAction<boolean>>) {
+export async function burnTokenAndCloseAccount(tokenMintAddress: string, owner: PublicKey, wallet: WalletContextState, connection: Connection, amount:number,setAmount: Dispatch<SetStateAction<string>>, setIsburning: Dispatch<SetStateAction<boolean>>) {
     try {
         setIsburning(true)
         const mintPublickey = new PublicKey(tokenMintAddress);
@@ -23,7 +23,7 @@ export async function burnTokenAndCloseAccount(tokenMintAddress: string, owner: 
             associatedAddress,
             owner,
             [],
-            1
+            amount
         );
 
         const closeInstruction = await Token.createCloseAccountInstruction(
@@ -41,7 +41,7 @@ export async function burnTokenAndCloseAccount(tokenMintAddress: string, owner: 
         const confirmed = await connection.confirmTransaction(BurnandCloseSignature, 'processed');
 
         if (confirmed) {
-            setAmount("0")
+            setAmount(0)
         }
     } catch (error) {
         setIsburning(false)
